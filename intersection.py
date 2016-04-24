@@ -81,14 +81,4 @@ def facetIntersect(v1,v2,v3,zval):
 	 		
 	 return ret 
 
-def allStlFacets(facetList, zval):
-	ret = []
-	while len(facetList)!= 0:
-		v = pop(facetList)
-		ret.expand(facetIntersect(v[0], v[1], v[2], zval))
-
-	return ret
-
-
-
 

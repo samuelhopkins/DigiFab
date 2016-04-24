@@ -66,7 +66,7 @@ def main(self):
   for z in range(starting_height, height, coder.layer_height):
     lines = []
     for f in facets:
-      lines.append(# do line/plane intersection)
+      lines.expand(facetIntersect(f.vs.x, f.vs.y, f.vs.z, z))
     perims = Perimeter.cyclemaker(lines)
 
   # for every increment of self.layer_height from 0 to height:
