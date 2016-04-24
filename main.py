@@ -19,15 +19,15 @@ class Facet:
         max = v.z
     return max
     
-def shell(shell_no, perim, output, infill, thickness):
+def shell(shell_no, perim, output, thickness):
   for s in range(shell_no):
     for p in range(0,len(perim.pts)-1):
     	current = perim.pts[p]
     	dest = perim.pts[p+1]
-    	e = infill.distance(current, dest)
+    	e = Infill.distance(current, dest)
     	line = "G0 X%.2E Y%.2E E.2E F%.2E" % (dest.x, dest.y, e, #f)
     	output.write(line)
-    e = infill.distance(perim.pts[len(perim.pts)-1], perim.pts[0])
+    e = Infill.distance(perim.pts[len(perim.pts)-1], perim.pts[0])
     line = "G0 X%.2E Y%.2E E%.2E" % (perim.pts[0].x, perim.pts[0].y, e)
     output.write(line)
     line = "G0 %X.2E Y%.2E" % (perim.pts[0].x + thickness, perim.pts[0].y + thickness)
@@ -54,6 +54,21 @@ def parseFile(file):
 		ret.append(facet)
 	f.close()
   return ret
+
+def setF(extrude):
+   if extrude: return 1800
+   else: return 2400
+
+def infiller(infill_lines, orientation, output):
+ for i in range(1,len(infill_lines)-1):
+   dest = infill_lines[i+1]
+   if orientation == 0:
+   	line = "G0 X%.2E Y%.2E F%.2E" % (dest.x, dest.y, 2400)
+   	output.write(line)
+   else:
+   	e = Infill.distance(i, dest)
+   	line = "G0 X%.2E Y%.2E E%.2E F%.2E" % (dest.x, dest.y, e, 1800)
+	output.write(line)
 
 def main(self):
   #command line arguments: file, layer thickness, #shell layers, %infill (0-100)
@@ -82,6 +97,16 @@ def main(self):
     for f in facets:
       lines.extend(facetIntersect(f.vs.x, f.vs.y, f.vs.z, z))
     perims = Perimeter.cyclemaker(lines)
-    
+    shell(coder.shell_no, perims[0], coder.infill, 
+
+    orientation = 0
+    infill_lines = Infill.calculateInfill(perims, 0, adjustment, coder.infill)
+    e = Infill.distance(infill_lines[0], infill_lines[1])
+    extrude = False
+    line = "G0 X%.2E Y%.2E Z%.2E E%.2E F%.2E" % (infill_lines[1].x, infill_lines[1].y, infill_lines[1].z,e, setF(extrude))
+    output.write(line)
+    infiller(infill_lines, orientation, output, 1.75)
+  
+    						 
   #     do shell infill
   #     do infill code
