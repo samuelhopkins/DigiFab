@@ -145,31 +145,3 @@ class Perimeter:
 		for n in nix:
 			ps.remove(ps[j])
 		return ps
-		
-lines = []
-lines.append(Line(Vertex(0,0,0),Vertex(1,1,1)))
-lines.append(Line(Vertex(4,4,4),Vertex(5,5,5)))
-lines.append(Line(Vertex(7,7,7),Vertex(6,6,6)))
-lines.append(Line(Vertex(3,3,3),Vertex(0,0,0)))
-lines.append(Line(Vertex(7,7,7),Vertex(4,4,4)))
-lines.append(Line(Vertex(1,1,1),Vertex(2,2,2)))
-lines.append(Line(Vertex(3,3,3),Vertex(2,2,2)))
-lines.append(Line(Vertex(5,5,5),Vertex(6,6,6)))
-'''
-p = Perimeter([Vertex(1,1,1),
-			  Vertex(0,0,0),
-			  Vertex(3,3,3),
-			  Vertex(2,2,2)])
-print p.checkClosed(lines)
-'''
-p = Perimeter([])
-for i in lines:
-	i.show()
-	print ""
-ps = []
-ps = Perimeter.cycleMaker(lines)
-print len(ps)
-for p in ps:
-	print "Perimeter [%d]" % ps.index(p)
-	p.show()
-	print ""
