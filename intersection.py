@@ -81,4 +81,11 @@ def facetIntersect(v1,v2,v3,zval):
 	 		
 	 return ret 
 
-
+def removeDup(linesList):
+	lines = list(set(lines))
+	for i in lines:
+		for j in lines:
+			if i.eq(j)
+				lines.remove(j)
+				
+	return lines
