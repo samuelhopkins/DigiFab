@@ -67,13 +67,7 @@ def main(self):
     lines = []
     for f in facets:
       lines.extend(facetIntersect(f.vs.x, f.vs.y, f.vs.z, z))
-    removeDup(lines)
     perims = Perimeter.cyclemaker(lines)
-
-  # for every increment of self.layer_height from 0 to height:
-  #     for every facet in the .stl file:
-  #         retrieve a line(s) that intersects with the cutting plane
-  #     combine all lines into a list of lines
-  #     assemble all lines into a list of perimeters
+    
   #     do shell infill
   #     do infill code
