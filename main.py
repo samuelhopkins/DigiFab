@@ -104,8 +104,7 @@ def main(self):
     orientation = 0
     infill_lines = Infill.calculateInfill(perims, 0, adjustment, coder.infill)
     e = Infill.distance(infill_lines[0], infill_lines[1])
-    extrude = False
-    line = "G0 X%.2E Y%.2E E%.2E F%.2E" % (infill_lines[1].x, infill_lines[1].y,e, setF(extrude))
+    line = "G0 X%.2E Y%.2E F%.2E" % (infill_lines[1].x, infill_lines[1].y, 2400)
     output.write(line)
     infiller(infill_lines, orientation, output, 1.75)
   
