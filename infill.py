@@ -13,10 +13,10 @@ class Infill():
 		inner_perimeter = perimeter[1]
 		sorted_x_outer = sorted(outer_perimeter)
 		sorted_y_outer = sorted(outer_perimeter, key=lambda x: x[2])
-		top_left_square = (sorted_x_outer[-1], sorted_y_outer[0])
-		top_right_square = (sorted_x_outer[0], sorted_y_outer[0])
-		bottom_right_square = (sorted_x_outer[0], sorted_y_outer[-1])
-		bottom_left_square = (sorted_x_outer[-1], sorted_y_outer[-1])
+		top_left_square = (sorted_x_outer[0], sorted_y_outer[-1])
+		top_right_square = (sorted_x_outer[-1], sorted_y_outer[-1])
+		bottom_right_square = (sorted_x_outer[-1], sorted_y_outer[0])
+		bottom_left_square = (sorted_x_outer[0], sorted_y_outer[0])
 
 		width_square = self.distance(top_left_square, top_right_square)
 		height_square = self.distance(top_left_square, bottom_left_square)
@@ -60,13 +60,21 @@ class Infill():
 			for i in range(len(inner_perimeter)-1):
 				points = [line[0], line[1], inner_perimeter[i], inner_perimeter[i+1]]
 				intersection = self.findIntersection(points)
-				intersections.append(intersection) 
+				if intersection != []:
+					intersections.append(intersection) 
 
 		intersections = sorted(intersections, key=lambda x: x[1])
 		return (intersections[0], intersections[1])
 
 	def findIntersection(self,points):
-		line1 = LineString([points[0], point[1]])
+		line1 = LineString([points[0], points[1]])
 		line2 = LineString([points[2], points[3]])
-		return line1.intersection(line2)
+		try:
+			intersect = line1.intersection(line2)
+			return intersect.coords[0]
+		except NotImplementedError:
+			return []
 
+if __name__=="__main__":
+	infill = Infill()
+	print infill.findIntersection([(0,1),(2,0),(0,0),(2,2)])
