@@ -18,7 +18,21 @@ class Facet:
       if max < v.z:
         max = v.z
     return max
-
+    
+def shell(shell_no, perim, output, infill, thickness):
+  for s in range(shell_no):
+    for p in range(0,len(perim.pts)-1):
+    	current = perim.pts[p]
+    	dest = perim.pts[p+1]
+    	e = infill.distance(current, dest)
+    	line = "G0 X%.2E Y%.2E E.2E F%.2E" % (dest.x, dest.y, e, #f)
+    	output.write(line)
+    e = infill.distance(perim.pts[len(perim.pts)-1], perim.pts[0])
+    line = "G0 X%.2E Y%.2E E%.2E" % (perim.pts[0].x, perim.pts[0].y, e)
+    output.write(line)
+    line = "G0 %X.2E Y%.2E" % (perim.pts[0].x + thickness, perim.pts[0].y + thickness)
+    output.write(line)
+    	
 def parseFile(file):
   ret = []
 	f = open(self.file, "r")
