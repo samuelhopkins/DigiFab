@@ -1,0 +1,48 @@
+Project 3 Documentation
+
+Input Parameters
+.stl file
+shell thickness (# of perimeter layers)
+%infill
+---------------------------------------------------------------
+
+Data Structures
+Vertex
+	x
+	y
+	z
+Line
+	Vertex a
+	Vertex b
+Perimeter
+	Points - Vertex[]
+Layer
+	Shell - Perimeter
+	Hollow - Perimeter
+	Infill - Line[]
+		list of potential interior points for GCode movement, extrusion
+		in case of hollowed-out core
+	orientation - flag 
+-------------------------------------------------------------------------
+
+Key Functions (helper functions can be made as necessary)
+Given 2 points, construct line - Line constructor
+Given Line - Plane-Line intersection
+	intersect with plane w/ set z-coordinate 
+	return Vertex
+Iterate through all facets in .stl file,
+	perform plane-line intersection (wrapper for prev)
+	return Line[]
+Iterate through Line[] - Perimeter maker
+	yield Perimeter[] (as ordered points)
+Given Shell, return Line[] - 
+	returns Line[] of infill lines along current orientation (horizonal/vertical)
+	switches orientation
+	should create two lines along current orientation if it hits the Hollow
+		shell-hollow, hollow-shell
+Raft-Maker
+Brim-Maker
+Shell-Maker - concentric shell layers
+	
+
+
