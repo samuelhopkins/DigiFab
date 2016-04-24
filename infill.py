@@ -34,21 +34,19 @@ class Infill():
 
 		if orientation == 1:
 			interval = height_square * infill
-			infill_intervals = width_square/interval
+			infill_intervals = height_square/interval
 			for i in range(infill_intervals):
 				if i == 0:
 					line = ((top_left_square[0]+adjustment,top_left_square[1]-adjustment), (top_right_square[0]-adjustment,top_right_square[1]-adjustment))
 				else:
-					line = (((top_left_square[0]+adjustment, top_left_square[1] - (i*interval))), ((bottom_right_square[0]+(i+interval)), top_left_square[1] - (i*interval)))
+					line = (((top_left_square[0]+adjustment, top_left_square[1] - (i*interval))), (bottom_right_square[0]+adjustment, top_left_square[1] - (i*interval)))
 				infill_lines.append(checkForInfillIntersection(line, outer_perimeter, inner_perimeter))
 		return self.linkInfillLines(infill_lines)
 
 	def linkInfillLines(self, lines):
 		linked_lines = []
-		for i in range(len(lines)-1):
-			linked = [lines[i], (lines[i][1], lines[i+1][0]])]
-			linked_lines+= linked
-		linked_lines.append(lines[-1])
+		for i in range(len(lines)):
+			linked_lines.extend([lines[i][1], lines[i][2]])
 		return linked_lines
 
 	def checkForInfillIntersection(self, line, outer_perimeter, inner_perimeter):
@@ -58,10 +56,11 @@ class Infill():
 			intersection = self.findIntersection(points)
 			intersections.append(intersection)
 
-		for i in range(len(inner_perimeter)-1):
-			points = [line[0], line[1], inner_perimeter[i], inner_perimeter[i+1]]
-			intersection = self.findIntersection(points)
-			intersections.append(intersection) 
+		if inner_perimeter:
+			for i in range(len(inner_perimeter)-1):
+				points = [line[0], line[1], inner_perimeter[i], inner_perimeter[i+1]]
+				intersection = self.findIntersection(points)
+				intersections.append(intersection) 
 
 		intersections = sorted(intersections, key=lambda x: x[1])
 		return (intersections[0], intersections[1])
