@@ -65,10 +65,12 @@ def infiller(infill_lines, orientation, output):
    if orientation == 0:
    	line = "G0 X%.2E Y%.2E F%.2E" % (dest.x, dest.y, 2400)
    	output.write(line)
+   	orientation == 1
    else:
    	e = Infill.distance(i, dest)
    	line = "G0 X%.2E Y%.2E E%.2E F%.2E" % (dest.x, dest.y, e, 1800)
 	output.write(line)
+	orientation == 0
 
 def main(self):
   #command line arguments: file, layer thickness, #shell layers, %infill (0-100)
@@ -103,7 +105,7 @@ def main(self):
     infill_lines = Infill.calculateInfill(perims, 0, adjustment, coder.infill)
     e = Infill.distance(infill_lines[0], infill_lines[1])
     extrude = False
-    line = "G0 X%.2E Y%.2E Z%.2E E%.2E F%.2E" % (infill_lines[1].x, infill_lines[1].y, infill_lines[1].z,e, setF(extrude))
+    line = "G0 X%.2E Y%.2E E%.2E F%.2E" % (infill_lines[1].x, infill_lines[1].y,e, setF(extrude))
     output.write(line)
     infiller(infill_lines, orientation, output, 1.75)
   
