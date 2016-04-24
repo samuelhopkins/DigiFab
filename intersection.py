@@ -21,7 +21,7 @@ def planeIntersect(p1,p2,zval):
 
 	x = (p1.x, p2.x-p1.x)
 	y = (p1.y, p2.y-p1.y)
-	z = (p1.z, p2.z-p2.z)
+	z = (p1.z, p2.z-p1.z)
 	t = (zval-z[0])/z[1]
 	if z[1] == 0:
 		if z[0] == zval:
