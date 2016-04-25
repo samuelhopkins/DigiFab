@@ -65,4 +65,51 @@ def supportLiner(supports, facet, spacer, filament_width): #spacer received as a
     if in_line == False:
       supports.remove(s)
   return ret
-    
+
+# returns an array of Lines composed of the end points of each support line
+def supportLinetoLine(sl):
+    ret = []
+    for h in sl.horiz:
+      ret.extend(h[0], h[len(h)]-1)
+    for v in sl.vert:
+      ret.extend(v[0], v[len(v)-1])
+    return ret    
+
+def distance(a,b):
+    return sqrt((b.x-a.x)^2 + (b.y-a.y)^2 + (b.z-a.z)^2)
+
+def supportConnector(sl, ret):
+  min = 1000000
+  min_index = 0
+  for i in sl:
+    if i not in ret:
+      dist = distance(ret[len(ret)-1].loc, i.loc) # distance from current endpt to next possible vertex
+      if min > dist:
+          min = dist
+          min_index = sl.loc(i)
+  ret.append(sl[min_index])
+  
+def brimBuilder(sl, output, brim_no, filament_width):
+  ret = []
+  ret.append(sl[0]
+  for i in sl:
+      ret = baseBuilder(sl, ret)
+      # ret should now be a cycle of the endpoints of the support lines
+  line = "G1 X%.2E Y%.2E F%.2E" % (ret[0].loc.x, ret[0].loc.y, 2400)
+  for i in range(brim_no):
+      adj = i * filament_width
+      line = "G1 X%.2E Y%.2E F%.2E" % (ret[0].loc.x+adj, ret[0].loc.y+adj, 2400)
+      for j in range(1,len(ret)-1):
+        e = dist(ret[j].loc, ret[j-1].loc)
+        line = "G1 X%.2E Y%.2E F%.2E E%.2E" % (ret[j].loc.x+adj, ret[j].loc.y+adj, 1800, e)
+        output.write(line)
+      line = "G1 X%.2E Y%.2E F%.2E E%.2E" % (ret[0].loc.x+adj, ret[0].loc.y+adj, 1800, e)
+      output.write(line)
+
+
+
+      
+            
+      
+  
+  
