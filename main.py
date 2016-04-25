@@ -12,12 +12,47 @@ class Facet:
     self.vs = vs
     self.normal = normal
   
+  def maxX(self):
+    max = 0
+    for v in self.vs:
+      if max < v.x:
+        max = v.x
+    return max	
+  
+  def maxY(self):
+    max = 0
+    for v in self.vs:
+      if max < v.y
+        max = v.y
+    return max
+  
   def maxZ(self):
     max = 0
     for v in self.vs:
       if max < v.z:
         max = v.z
     return max
+   
+   def minX(self):
+    min = 0
+    for v in self.vs:
+      if min < v.X:
+        min = v.X
+    return min
+    
+    def minY(self):
+    min = 0
+    for v in self.vs:
+      if min < v.y:
+        min = v.y
+    return min
+    
+   def minZ(self):
+    min = 0
+    for v in self.vs:
+      if min > v.z:
+        min = v.z
+    return min
     
 def shell(shell_no, perim, output, thickness):
   for s in range(shell_no):
