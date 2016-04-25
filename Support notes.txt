@@ -1,0 +1,47 @@
+Support system
+Compound shape doesn't need supports, is assumed to be stable...
+	compound shape doesn't appear to be a mix of a cube, sphere and cylinder but...OK
+
+for every facet with a surface normal with a negative z-component (facing downward)
+	vet the angle betweent the surface normal and cutting plane
+		both normal and cutting plane can be represented as Vertices
+		cutting plane: 100,100,0
+	this formula requires:
+		math (for trig functions)
+		dot product function
+		magnitude function
+	check the resultant angle between planes against the minimum support angle
+		Cura's support angle treats vertical as 0, horizontal as 90
+		this is the equivalent of (90 - theta)
+	Is the resultant angle >= min support angle?
+	NO - no support; break
+	YES: 
+		find the center of that face
+			take midpts in x,y,z
+		Support class
+			Vertex(x,y,z) for x,y, target z
+			where target z is the mdpt z of the target face
+Once all supports are created,
+	join supports by common x/y-value (doesn't matter which, as long as it's consistent)
+	separate by a support-infill% (just like in the regular infill% spacer)
+	remove any and all supports that are not part of these support lines
+	form a perimeter out of all the points at the ends of the lines
+		this will serve as the outermost support
+			the edge for both the brim and rafting areas
+Brim: Print x brim layers from (thickness * x) away, work way in to widest perimeter of the shape
+	Print a grid-line across the area denoted by the outermost support perimeter(1st layer)
+
+
+Rafting: set initial area to that of the brim width, x layers out (just a single layer though)
+	print rows from edge to edge based on support-infill% 
+	fill in this space for several layers (use existing grid fill with 50% infill)
+	then start 
+
+Support:
+	run check across each Support in a given line
+		if the current height of the Support == target height, don't print there
+			isntead find the next line in the current Support[] line that has not reached the target height
+		if not, do print there, increment current height by layer height
+	this will continue for every layer until the end
+
+	
