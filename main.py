@@ -65,12 +65,13 @@ def infiller(infill_lines, extrude, output):
    if extrude == 0:
    	line = "G0 X%.2E Y%.2E F%.2E" % (dest.x, dest.y, 2400)
    	output.write(line)
-   	extrude == 1
+   	extrude = 1
    else:
    	e = Infill.distance(i, dest)
    	line = "G0 X%.2E Y%.2E E%.2E F%.2E" % (dest.x, dest.y, e, 1800)
 	output.write(line)
-	extrude == 0
+	extrude = 0
+
 
 def main(self):
   #command line arguments: file, layer thickness, #shell layers, %infill (0-100)
