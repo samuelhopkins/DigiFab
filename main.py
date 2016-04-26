@@ -60,12 +60,12 @@ def shell(shell_no, perim, output, thickness):
     	current = perim.pts[p]
     	dest = perim.pts[p+1]
     	e = Infill.distance(current, dest)
-    	line = "G0 X%.2E Y%.2E E.2E F%.2E" % (dest.x, dest.y, e, #f)
+    	line = "G1 X%.3f Y%.3f E%.5f F%.3f" % (dest.x, dest.y, e, 1800)
     	output.write(line)
     e = Infill.distance(perim.pts[len(perim.pts)-1], perim.pts[0])
-    line = "G0 X%.2E Y%.2E E%.2E" % (perim.pts[0].x, perim.pts[0].y, e)
+    line = "G1 X%.3f Y%.3f E%.5f" % (perim.pts[0].x, perim.pts[0].y, e)
     output.write(line)
-    line = "G0 %X.2E Y%.2E" % (perim.pts[0].x + thickness, perim.pts[0].y + thickness)
+    line = "G1 %X.3f Y%.3f" % (perim.pts[0].x + thickness, perim.pts[0].y + thickness)
     output.write(line)
     	
 def parseFile(file):
@@ -136,16 +136,44 @@ def main(self):
     for f in facets:
       lines.extend(facetIntersect(f.vs.x, f.vs.y, f.vs.z, z))
     perims = Perimeter.cyclemaker(lines)
-    shell(coder.shell_no, perims[0], coder.infill, 
-
+    shell(coder.shell_no, perims[0], filament_thickness)
+'''
     infill_lines = Infill.calculateInfill(perims, orientation, adjustment, coder.infill)
     e = Infill.distance(infill_lines[0], infill_lines[1])
-    line = "G0 X%.2E Y%.2E F%.2E" % (infill_lines[1].x, infill_lines[1].y, 2400)
+    line = "G0 X%.3f Y%.3f F%.3f" % (infill_lines[1].x, infill_lines[1].y, 2400)
     output.write(line)
     infiller(infill_lines, extrude, output, 1.75)
     
     if orientation == 0: orientation = 1
     else: orientation = 0
-    						 
+''' 						 
   #     do shell infill
   #     do infill code
+	#writing end-gcode
+	output.write(";End GCode"
+		     "M104 S0                     ;extruder heater off"
+		     "M140 S0                     ;heated bed heater off (if you have it)"
+		     "G91                                    ;relative positioning"
+		     "G1 E-1 F300                            ;retract the filament a bit before lifting the nozzle, to release some of the pressure"
+		     "G1 Z+0.5 E-5 X-20 Y-20 F{travel_speed} ;move Z up a bit and retract filament even more"
+		     "G28 X0 Y0                              ;move X/Y to min endstops, so the head is out of the way"
+		     "M84                         ;steppers off"
+		     "G90                         ;absolute positioning"
+		     ";{profile_string}")
+	
+		     
+
+
+
+		     
+		
+
+		     
+		     
+		     
+		     
+
+
+
+
+		     
