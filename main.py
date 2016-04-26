@@ -53,16 +53,20 @@ class Facet:
       if min > v.z:
         min = v.z
     return min
-    
+
+def distance(a,b):
+	return sqrt((b.x-a.x)^2 + (b.y-a.y)^2 + (b.z-a.z)^2)
+
 def shell(shell_no, perim, output, thickness):
+  e = 0
   for s in range(shell_no):
-    for p in range(0,len(perim.pts)-1):
+    for p in range(0,len(perim.pts)-2):
     	current = perim.pts[p]
     	dest = perim.pts[p+1]
-    	e = Infill.distance(current, dest)
+    	e = distance.(dest, current)
     	line = "G1 X%.3f Y%.3f E%.5f F%.3f" % (dest.x, dest.y, e, 1800)
     	output.write(line)
-    e = Infill.distance(perim.pts[len(perim.pts)-1], perim.pts[0])
+    e = distance.(perim.pts[len(perim.pts)-1], perim.pts[0])
     line = "G1 X%.3f Y%.3f E%.5f" % (perim.pts[0].x, perim.pts[0].y, e)
     output.write(line)
     line = "G1 %X.3f Y%.3f" % (perim.pts[0].x + thickness, perim.pts[0].y + thickness)
