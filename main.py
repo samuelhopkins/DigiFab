@@ -1,4 +1,11 @@
 import sys
+import infill
+import intersection
+import line
+import perimeter
+import support
+import vertex
+
 
 class Gcoder:
   def __init__(self, file, layer_height=.15, shell_no=2, infill=20):
