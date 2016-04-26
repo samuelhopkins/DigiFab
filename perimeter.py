@@ -62,22 +62,12 @@ class Perimeter:
 					self.pts.remove(j)
 	
 	def eq(self, j):
-		print ""
-		print "duplicate perimeter check"
 		dup = 0
-		self.show()
-		print""
-		j.show()
 		if len(self.pts) == len(j.pts):
 			for a in self.pts:
-				print "a: ", a.show()
 				for b in range(0,len(j.pts)):
-					print "b: ", j.pts[b].show()
 					if a.eq(j.pts[b]):
-						print "dup incremented"
 						dup = dup + 1
-				print ""
-					
 		if dup == len(self.pts):
 			return True
 	
@@ -96,45 +86,22 @@ class Perimeter:
 					for v in p.pts:
 						if p.connected(v,i.a,lines) and i.a not in p.pts: 
 							p.pts.insert(p.pts.index(v)+1,i.b)
-							print "inserted"
 							added = 1
 							p.reorder(lines)
-							p.show()
 						elif p.connected(v,i.b,lines) and i.b not in p.pts:
 							p.pts.insert(p.pts.index(v)+1,i.a)
-							print "inserted"
 							added = 1
 							p.reorder(lines)
-							p.show()
-			'''		if p.pts[len(p.pts)-1].eq(i.a):
-						p.pts.append(i.b)
-						print "appended"
-						added = 1
-					elif p.pts[len(p.pts)-1].eq(i.b):
-						p.pts.append(i.a)
-						print "appended"
-						added = 1
-				''' 
 			# if the current line cannot be added to any existing perimeter
 			#	make it the seed of a new perimeter
 			if added == 0:
-				print "new perimeter"
 				a = Perimeter([i.a,i.b])
-				a.show()
 				ps.append(Perimeter(pts=[i.a,i.b]))
-			
 		for p in ps:
 			if p.checkClosed(lines) == False:
 				ps.remove(p)
-				print "unclosed cycle"
 		for p in ps:
 			p.removeDupVertex()
-		
-		for p in ps:
-			print "Perimeter [%d]" % ps.index(p)
-			p.show()
-			print ""
-		
 		nix = []
 		for i in range(0,len(ps)-1):
 			for j in range(0,len(ps)):
