@@ -79,5 +79,11 @@ class Infill():
 
 if __name__=="__main__":
 	infill = Infill()
-	print infill.findIntersection([(0,1),(2,0),(0,0),(2,2)])
+<<<<<<< HEAD
+	perimeters = ([(0,0,0), (0,1,0), (1,1,0),(1,0,0)],[])
+	print infill.calculateInfill(perimeters, 1, 0.1, 0.1)
 	#print infill.checkForInfillIntersection(((0, 1), (1, 1)), perimeters[0], [] )
+	#print infill.findIntersection([(0,1),(2,0),(0,0),(2,2)])
+=======
+	print infill.findIntersection([(0,1),(2,0),(0,0),(2,2)])
+>>>>>>> b52f362ec2952bb40d8b5c944dd827df13971d7b
