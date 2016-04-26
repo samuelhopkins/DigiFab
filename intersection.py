@@ -17,7 +17,7 @@ def planeIntersect(p1,p2,zval):
 	#plane definitely doesn't cross line seg
 	if not (((p1.z <= zval) and (p2.z >= zval))
 		 or ((p1.z >= zval) and (p2.z <= zval))):
-		return (0,0,-2)
+		return Vertex(0,0,-2)
 
 	x = (p1.x, p2.x-p1.x)
 	y = (p1.y, p2.y-p1.y)
@@ -85,7 +85,7 @@ def removeDup(linesList):
 	lines = list(set(lines))
 	for i in lines:
 		for j in lines:
-			if i.eq(j)
+			if i.eq(j):
 				lines.remove(j)
 				
 	return lines
