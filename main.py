@@ -57,21 +57,25 @@ class Facet:
 def distance(a,b):
 	return sqrt((b.x-a.x)^2 + (b.y-a.y)^2 + (b.z-a.z)^2)
 
-def shell(shell_no, perim, output, thickness):
-  e = 0
+def e(a,b,thickness=.4,diameter=1.75):
+	return (distance(a,b) * thickness)/diameter
+
+def shell(shell_no, perim, output, thickness, count):
+  extrudate = count
   for s in range(shell_no):
     for p in range(0,len(perim.pts)-2):
     	current = perim.pts[p]
     	dest = perim.pts[p+1]
-    	e = distance.(dest, current)
-    	line = "G1 X%.3f Y%.3f E%.5f F%.3f" % (dest.x, dest.y, e, 1800)
+    	extrudate = extrudate + e.(dest, current)
+    	line = "G1 X%.3f Y%.3f E%.5f F%.3f" % (dest.x, dest.y, extrudate, 1800)
     	output.write(line)
-    e = distance.(perim.pts[len(perim.pts)-1], perim.pts[0])
-    line = "G1 X%.3f Y%.3f E%.5f" % (perim.pts[0].x, perim.pts[0].y, e)
+    extrudate = extrudate + e.(perim.pts[len(perim.pts)-1], perim.pts[0])
+    line = "G1 X%.3f Y%.3f E%.5f" % (perim.pts[0].x, perim.pts[0].y, extrudate)
     output.write(line)
-    line = "G1 %X.3f Y%.3f" % (perim.pts[0].x + thickness, perim.pts[0].y + thickness)
+    line = "G1 %X.3f Y%.3f" % (perim.pts[0].x + s*thickness, perim.pts[0].y + s*thickness)
     output.write(line)
-    	
+    return extrudate
+    
 def parseFile(file):
   ret = []
 	f = open(self.file, "r")
@@ -134,13 +138,16 @@ def main(self):
     if height < max:
       height = max
   
+  count = 0
   orientation = 0
   for z in range(starting_height, height, coder.layer_height):
     lines = []
     for f in facets:
       lines.extend(facetIntersect(f.vs.x, f.vs.y, f.vs.z, z))
     perims = Perimeter.cyclemaker(lines)
-    shell(coder.shell_no, perims[0], filament_thickness)
+    count = shell(coder.shell_no, perims[0], filament_thickness,count)
+    line = "G0 Z%.3f" % z+coder.layer_height
+    output.write(line)
 '''
     infill_lines = Infill.calculateInfill(perims, orientation, adjustment, coder.infill)
     e = Infill.distance(infill_lines[0], infill_lines[1])
