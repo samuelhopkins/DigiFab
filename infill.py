@@ -71,7 +71,9 @@ class Infill():
 			if last_line != []:
 				intersections.append(intersection)
 		intersections = sorted(intersections, key=lambda x: x[1])
-		return (intersections[0], intersections[1])
+		unique = []
+		[unique.append(item) for item in intersections if item not in unique]
+		return (unique[0], unique[1])
 
 	def findIntersection(self,points):
 		line1 = LineString([points[0], points[1]])
@@ -86,4 +88,5 @@ if __name__=="__main__":
 	infill = Infill()
 	perimeters = ([(0,0,0), (0,1,0), (1,1,0),(1,0,0)],[])
 	print infill.calculateInfill(perimeters, 1, 0.1, 0.1)
+	#print infill.checkForInfillIntersection(((0, 1), (1, 1)), perimeters[0], [] )
 	#print infill.findIntersection([(0,1),(2,0),(0,0),(2,2)])
