@@ -35,7 +35,8 @@ def planeIntersect(p1,p2,zval):
 			return Vertex(0,0,-2)
 	else:
 		t = (zval-z[0])/z[1]
-		return Vertex(x[0]+x[1]*t, y[0]+y[1]*t, z[0]+z[1]*t)
+		print "plane intersection"
+		return Vertex(x[0]+x[1]*t, y[0]+y[1]*t, zval)
 
 
 #holy this function had way more cases than I thought there was
@@ -60,27 +61,25 @@ def facetIntersect(v1,v2,v3,zval):
 	 	ret.append(Line(v3,v1))
 		print "Line v3, v1:"
 		Line(v3,v1).show()
-	 print len(ret)
-	 if len(ret) == 0:
-		print "ret empty"
+	 if len(ret) > 0:
 	 	return ret
 
 	 #case where the triangle doesn't intersect the plane at all
-	 if p1.y == -2 and p2.y == -2 and p3.y == -2:
+	 if p1.z == -2 and p2.z == -2 and p3.z == -2:
 		print "triangle doesn't intersect plane"
 	 	return ret
 
 	 #cases where the plane intersects the middle of the triangle 
 	 #   and one edge does not intersect the plane
 	 if p1.z == -2:
-	 	ret.append(Line(v1,v2))
+	 	ret.append(Line(p2,p3))
 		print "Middle"
 	 elif p2.z == -2:
 		print "MIddle"
-	 	ret.append(Line(v2,v3))
+	 	ret.append(Line(p1,p3))
 	 elif p3.z == -2:
 		print "Middle"
-	 	ret.append(Line(v3,v1))
+	 	ret.append(Line(p1,p2))
 	 else:
 	 	tba = list(set([p1,p2,p3]))
 
