@@ -1,6 +1,7 @@
 import math
 from line import Line
 from vertex import Vertex
+from collections import OrderedDict
 
 class Perimeter:
 	def __init__(self, pts):
@@ -54,13 +55,15 @@ class Perimeter:
 					self.pts[i],self.pts[j] = self.pts[j], self.pts[i]
 	
 	def removeDupVertex(self):
+		ret = Perimeter([])
+		ret.pts.append(self.pts[0])
 		for i in self.pts:
-			times = 0
-			for j in self.pts:
+			for j in ret.pts:
 				if i.eq(j) == True:
-					times = times + 1
-				if times > 1:
-					self.pts.remove(j)
+					break
+			ret.pts.append(i)
+		print "removeDupVertex"
+		ret.show()
 	
 	def eq(self, j):
 		dup = 0
@@ -82,6 +85,7 @@ class Perimeter:
 				
 				if p.checkDupLine(i): # skip exact duplicate lines
 					print "duplicate line"
+					added = 1
 					break
 				else:
 					# append the new vertex
@@ -89,15 +93,17 @@ class Perimeter:
 					# append 2, st p=[0,1,2]
 					for v in p.pts:
 						print "point-checker"
-						if p.connected(v,i.a,lines) and i.a not in p.pts: 
+						if p.connected(v,i.a,lines) and i.b not in p.pts: 
 							print "match on a"
 							p.pts.insert(p.pts.index(v)+1,i.b)
+							i.b.show()
 							added = 1
 							p.reorder(lines)
 							break
-						elif p.connected(v,i.b,lines) and i.b not in p.pts:
+						elif p.connected(v,i.b,lines) and i.a not in p.pts:
 							print "match on b"
 							p.pts.insert(p.pts.index(v)+1,i.a)
+							i.a.show()
 							added = 1
 							p.reorder(lines)
 							break
@@ -106,17 +112,23 @@ class Perimeter:
 			#	make it the seed of a new perimeter
 			if added == 0:
 				print "new perimeter"
+				i.show()
 				a = Perimeter([i.a,i.b])
 				ps.append(Perimeter(pts=[i.a,i.b]))
 		print "out of the loop"
+		print ""
+		for p in ps:
+			p.removeDupVertex()
+		print "removed"
 		for p in ps:
 			p.show()
+			print ""
 		for p in ps:
 			if p.checkClosed(lines) == False:
 				ps.remove(p)
 		print "removed non-manifold perimeter"
-		for p in ps:
-			p.removeDupVertex()
+		#for p in ps:
+		#	p.removeDupVertex()
 		nix = []
 		for i in range(0,len(ps)-1):
 			for j in range(0,len(ps)):
