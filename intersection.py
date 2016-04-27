@@ -2,6 +2,7 @@ import math
 from line import Line
 from vertex import Vertex
 
+
 def crossProd(v1,v2):
 	return (v1[1]*v2[2]-v1[2]*v2[1],
 			v1[2]*v2[0]-v1[0]*v2[2],
@@ -102,3 +103,70 @@ def removeDup(linesList):
 				lines.remove(j)
 				
 	return lines
+
+def distToOrigin(v1):
+	math.sqrt(math.pow(v1.x,2) + math.pow(v1.y,2))
+
+def dist(v1,v2):
+	math.sqrt(math.pow(v1.x-v2.x,2) + math.pow(v1.y-v2.y,2))
+
+#after removing duplicate lines, call this
+#first find the center of the shape
+#then for lines sharing an endpoint, 
+def findperim(linesList):
+	cto = distToOrigin(linesList[0].a)
+	ctov = linesList[0].a
+	for i in linesList:
+		if distToOrigin(linesList[i].a) < cto:
+			cto = distToOrigin(linesList[i].a)
+			ctov = linesList[i].a
+		elif distToOrigin(linesList[i].b) < cto:
+			cto = distToOrigin(linesList[i].b)
+			ctov = linesList[i].b
+		else:
+			pass
+
+	#now cto should have the point closest to the origin
+	#now we find the point farthest to the origin
+	fto = distToOrigin(linesList[0].a)
+	ftov = linesList[0].a
+	for i in linesList:
+		if distToOrigin(linesList[i].a) > fto:
+			fto = distToOrigin(linesList[i].a)
+			ftov = linesList[i].a
+		elif distToOrigin(linesList[i].b) > fto:
+			fto = distToOrigin(linesList[i].b)
+			ftov = linesList[i].b
+		else:
+			pass
+
+	#now we find the midpoint
+	mid = Vertex((ftov.x-ctov.x)/2, (ftov.y-ctov.y)/2, ftov.z)
+
+	#now we try to find the perimeter based on these facts:
+	#find a line segment in which either point is the same as the previous
+	#if multiple ones, then store the one with the least distance to mid
+	ret = []
+	ret.append(ctov)
+	last = ctov
+	d = 99999
+	tba = Vertex(-1,-1,-1)
+	dtba = 99999
+	while not last.eq(ctov):
+		for i in linesList:
+			if linesList[i].a.eq(last) and dist(mid,linesList[i].b) >= d and dist(last, linesList[i].b) <= dtba:
+				tba = linesList[i].b
+				d = dist(mid, linesList[i].b)
+				dtba = dist(last, linesList[i].b)
+			elif linesList[i].b.eq(last) and dist(mid,linesList[i].a) >= d and dist(last, linesList[i].a) <= dtba:
+				tba = linesList[i].a
+				d = dist(mid, linesList[i].a)
+				dtba = dist(last, linesList[i].a)
+			else:
+				pass
+			d = 99999
+			dtba = 99999
+			ret.append(tba)
+			last = linesList[i].a
+
+	return ret
