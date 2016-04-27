@@ -40,7 +40,8 @@ class Perimeter:
 	
 	def connected(self,a,b,lines):
 		for i in lines:
-			if a.eq(b):
+			if ((i.a.eq(a) and i.b.eq(b))
+				or(i.b.eq(a) and i.a.eq(b))):
 				return True
 		return False
 	
@@ -75,31 +76,45 @@ class Perimeter:
 	def cycleMaker(self, lines):
 		ps = []
 		for i in lines:
+			print "i: %d" % lines.index(i)
 			added = 0
 			for p in ps:
+				
 				if p.checkDupLine(i): # skip exact duplicate lines
+					print "duplicate line"
 					break
 				else:
 					# append the new vertex
 					# if p contains [0,1] and i=[1,2]
 					# append 2, st p=[0,1,2]
 					for v in p.pts:
+						print "point-checker"
 						if p.connected(v,i.a,lines) and i.a not in p.pts: 
+							print "match on a"
 							p.pts.insert(p.pts.index(v)+1,i.b)
 							added = 1
 							p.reorder(lines)
+							break
 						elif p.connected(v,i.b,lines) and i.b not in p.pts:
+							print "match on b"
 							p.pts.insert(p.pts.index(v)+1,i.a)
 							added = 1
 							p.reorder(lines)
+							break
+							
 			# if the current line cannot be added to any existing perimeter
 			#	make it the seed of a new perimeter
 			if added == 0:
+				print "new perimeter"
 				a = Perimeter([i.a,i.b])
 				ps.append(Perimeter(pts=[i.a,i.b]))
+		print "out of the loop"
+		for p in ps:
+			p.show()
 		for p in ps:
 			if p.checkClosed(lines) == False:
 				ps.remove(p)
+		print "removed non-manifold perimeter"
 		for p in ps:
 			p.removeDupVertex()
 		nix = []
