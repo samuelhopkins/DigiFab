@@ -9,6 +9,9 @@ class Vertex:
 	def show(self):
 		print("%.2E %.2E %.2E") % (self.x, self.y, self.z)
 	
+	def tuple(self):
+		return (self.x, self.y, self.z)
+		
 	def scale(self, size):
 		self.x = self.x * size
 		self.y = self.y * size
@@ -45,7 +48,8 @@ class Vertex:
 		return False
 	
 	def dot(self, v):
-		return self.x(v.x + self.y*v.y + self.z*float(v.z)
+		return self.x(v.x + self.y*v.y + self.z*float(v.z))
+		return self.x(v.x + self.y*v.y + self.z*float(v.z))
 	
 	def mag(self):
 		return sqrt(self.x^2 + self.y^2 + float(self.z^2))

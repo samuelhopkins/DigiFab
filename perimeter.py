@@ -75,67 +75,111 @@ class Perimeter:
 		if dup == len(self.pts):
 			return True
 	
-	@classmethod
-	def cycleMaker(self, lines):
-		ps = []
-		for i in lines:
-			print "i: %d" % lines.index(i)
-			added = 0
-			for p in ps:
+def cycleMaker(lines):
+	print "line length", len(lines)
+	perimeters = []
+	count = 0
+	perimeter_one = [lines[0]]
+	added_lines = set()
+	added_lines.add(lines[0].tuple())
+	while count <= len(lines):
+		exit = False
+		print added_lines
+		perimeter_line = perimeter_one[-1]
+		perimeter_line_first = perimeter_one[0]
+		for line in lines:
+			if line.tuple() not in added_lines:
+				if line.a.eq(perimeter_line.a) or line.a.eq(perimeter_line.b) or line.b.eq(perimeter_line.b) or line.b.eq(perimeter_line.a):
+					perimeter_one.append(line)
+					added_lines.add(line.tuple())
+				elif line.a.eq(perimeter_line_first.a) or line.a.eq(perimeter_line_first.b) or line.b.eq(perimeter_line_first.b) or line.b.eq(perimeter_line_first.a):
+					perimeter_one = [line] + perimeter_one
+					added_lines.add(line.tuple())
+		count += 1
+		
+	perimeter_two = []
+	for line in lines:
+		if line.tuple() not in added_lines:
+			perimeter_two.append(line)
+
+	perimeters.append(perimeter_one)
+	if perimeter_two != []:
+		perimeters.append(perimeter_two)
+
+	cycles = []
+	for perimeter in perimeters:
+		print "len perimeter", len(perimeter)
+		cycles.append(linkLines(perimeter))
+	return cycles
+
+
+
+def linkLines(perimeter):
+	points = [perimeter[0].a,perimeter[0].b]
+	for point in perimeter[1:]:
+		points.append(point.b)
+	points.append(perimeter[0].a)
+	return points
+# def cycleMaker(self, lines):
+	# 	ps = []
+	# 	for i in lines:
+	# 		print "i: %d" % lines.index(i)
+	# 		added = 0
+	# 		for p in ps:
 				
-				if p.checkDupLine(i): # skip exact duplicate lines
-					print "duplicate line"
-					added = 1
-					break
-				else:
-					# append the new vertex
-					# if p contains [0,1] and i=[1,2]
-					# append 2, st p=[0,1,2]
-					for v in p.pts:
-						print "point-checker"
-						if p.connected(v,i.a,lines) and i.b not in p.pts: 
-							print "match on a"
-							p.pts.insert(p.pts.index(v)+1,i.b)
-							i.b.show()
-							added = 1
-							p.reorder(lines)
-							break
-						elif p.connected(v,i.b,lines) and i.a not in p.pts:
-							print "match on b"
-							p.pts.insert(p.pts.index(v)+1,i.a)
-							i.a.show()
-							added = 1
-							p.reorder(lines)
-							break
+	# 			if p.checkDupLine(i): # skip exact duplicate lines
+	# 				print "duplicate line"
+	# 				added = 1
+	# 				break
+	# 			else:
+	# 				# append the new vertex
+	# 				# if p contains [0,1] and i=[1,2]
+	# 				# append 2, st p=[0,1,2]
+	# 				for v in p.pts:
+	# 					print "point-checker"
+	# 					if p.connected(v,i.a,lines) and i.b not in p.pts: 
+	# 						print "match on a"
+	# 						p.pts.insert(p.pts.index(v)+1,i.b)
+	# 						i.b.show()
+	# 						added = 1
+	# 						p.reorder(lines)
+	# 						break
+	# 					elif p.connected(v,i.b,lines) and i.a not in p.pts:
+	# 						print "match on b"
+	# 						p.pts.insert(p.pts.index(v)+1,i.a)
+	# 						i.a.show()
+	# 						added = 1
+	# 						p.reorder(lines)
+	# 						break
 							
-			# if the current line cannot be added to any existing perimeter
-			#	make it the seed of a new perimeter
-			if added == 0:
-				print "new perimeter"
-				i.show()
-				a = Perimeter([i.a,i.b])
-				ps.append(Perimeter(pts=[i.a,i.b]))
-		print "out of the loop"
-		print ""
-		for p in ps:
-			p.removeDupVertex()
-		print "removed"
-		for p in ps:
-			p.show()
-			print ""
-		for p in ps:
-			if p.checkClosed(lines) == False:
-				ps.remove(p)
-		print "removed non-manifold perimeter"
-		#for p in ps:
-		#	p.removeDupVertex()
-		nix = []
-		for i in range(0,len(ps)-1):
-			for j in range(0,len(ps)):
-				if i == j:
-					pass
-				elif ps[i].eq(ps[j]):
-					nix.append(j)
-		for n in nix:
-			ps.remove(ps[j])
-		return ps
+	# 		# if the current line cannot be added to any existing perimeter
+	# 		#	make it the seed of a new perimeter
+	# 		if added == 0:
+	# 			print "new perimeter"
+	# 			i.show()
+	# 			a = Perimeter([i.a,i.b])
+	# 			ps.append(Perimeter(pts=[i.a,i.b]))
+	# 	print "out of the loop"
+	# 	print ""
+	# 	for p in ps:
+	# 		p.removeDupVertex()
+	# 	print "removed"
+	# 	for p in ps:
+	# 		p.show()
+	# 		print ""
+	# 	for p in ps:
+	# 		if p.checkClosed(lines) == False:
+	# 			ps.remove(p)
+	# 	print "removed non-manifold perimeter"
+	# 	#for p in ps:
+	# 	#	p.removeDupVertex()
+	# 	nix = []
+	# 	for i in range(0,len(ps)-1):
+	# 		for j in range(0,len(ps)):
+	# 			if i == j:
+	# 				pass
+	# 			elif ps[i].eq(ps[j]):
+	# 				nix.append(j)
+	# 	for n in nix:
+	# 		ps.remove(ps[j])
+	# 	return ps

@@ -67,9 +67,9 @@ def facetIntersect(v1,v2,v3,zval):
 	p1 = planeIntersect(v1,v2,zval)
 	p2 = planeIntersect(v2,v3,zval)
 	p3 = planeIntersect(v3,v1,zval)
-	p1.show()
-	p2.show()
-	p3.show()
+	#p1.show()
+	#p2.show()
+	#p3.show()
 	ret = []
 	
 	#case where the triangle lies on the plane, throw it out
