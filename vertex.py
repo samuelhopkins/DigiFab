@@ -9,6 +9,9 @@ class Vertex:
 	def show(self):
 		print("%.2E %.2E %.2E") % (self.x, self.y, self.z)
 	
+	def tuple(self):
+		return (self.x, self.y, self.z)
+		
 	def scale(self, size):
 		self.x = self.x * size
 		self.y = self.y * size
