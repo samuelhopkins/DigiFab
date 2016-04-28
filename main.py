@@ -70,16 +70,16 @@ def e(a,b,thickness=.4,diameter=1.75):
 def shell(shell_no, perim, output, thickness, count):
   extrudate = count
   for s in range(shell_no):
-    for p in range(0,len(perim.pts)-2):
-    	current = perim.pts[p]
-    	dest = perim.pts[p+1]
+    for p in range(0,len(perim)-2):
+    	current = perim[p]
+    	dest = perim[p+1]
     	extrudate = extrudate + e(dest, current)
     	line = "G1 X%.3f Y%.3f E%.5f F%.3f\n" % (dest.x, dest.y, extrudate, 1800)
     	output.write(line)
-    extrudate = extrudate + e(perim.pts[len(perim.pts)-1], perim.pts[0])
-    line = "G1 X%.3f Y%.3f E%.5f\n" % (perim.pts[0].x, perim.pts[0].y, extrudate)
+    extrudate = extrudate + e(perim[len(perim)-1], perim[0])
+    line = "G1 X%.3f Y%.3f E%.5f\n" % (perim[0].x, perim[0].y, extrudate)
     output.write(line)
-    line = "G1 X%.3f Y%.3f\n" % (perim.pts[0].x + s*thickness, perim.pts[0].y + s*thickness)
+    line = "G1 X%.3f Y%.3f\n" % (perim[0].x + s*thickness, perim[0].y + s*thickness)
     output.write(line)
     return extrudate
     
@@ -165,12 +165,10 @@ def main():
 		lines = []
 		for f in facets:
 			lines.extend(intersection.facetIntersect(f.vs[0], f.vs[1], f.vs[2], z))
-			print "intersections"
+		print len(lines)
 		perims = perimeter.cycleMaker(lines)
-		print "perimeter"
 		count = shell(shell_no, perims[0], output,thickness,count)
-		print "shell"
-		z = z + layer_height
+		z += layer_height
 		line = "G0 Z%.3f\n" % z
 		output.write(line)
 	output.write(";End GCode\n"

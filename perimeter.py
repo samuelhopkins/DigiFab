@@ -76,21 +76,56 @@ class Perimeter:
 			return True
 	
 def cycleMaker(lines):
+	print "line length", len(lines)
 	perimeters = [[lines[0]]]
 	lines = lines[1:]
 	break_perimeter = False
 	for index, line in enumerate(lines):
 		connected = False
+		print "sum is", sum([len(x) for x in perimeters])
 		for i, perimeter in enumerate(perimeters):
-			perimeter_line = perimeter[-1]
-			if line.a == perimeter_line.a or line.a == perimeter_line.b or line.b == perimeter_line.b or line.b == perimeter_line.b:
-				perimeters[i].append(line)
-				connected = True
-			if not connected:
-				perimeters.append([line])
-
+			for l in perimeter:
+				perimeter_line = l
+				if line.a.eq(perimeter_line.a) or line.a.eq(perimeter_line.b) or line.b.eq(perimeter_line.b) or line.b.eq(perimeter_line.a):
+					perimeters[i].append(line)
+					connected = True
+					break
+			if connected is True:
+				break
+		if connected is False:
+			perimeters.append([line])
+	copy_perimeters = []
+	count = 0
+	while count < len(perimeters):
+		index = -1
+		addition_index = -1
+		addition= []
+		merge = False
+		for i, p in enumerate(perimeters):
+			for p_line in p:
+				if i < len(perimeters):
+					for p,per in enumerate(perimeters[i+1:]):
+						for l in per:
+							if l.a.eq(p_line.a) or l.a.eq(p_line.b) or l.b.eq(p_line.b) or l.b.eq(p_line.a):
+								index = i
+								addition = per
+								addition_index = p
+								merge = True
+							if merge is True:
+								break
+						if merge is True:
+							break
+				if merge is True:
+					break
+			if merge is True:
+				break
+		if merge is True:
+			perimeters[i] = perimeters[i].extend(addition)
+			perimeters = perimeters[:i] + perimeters[addition_index+i+1:]
+		count += 1					
 	cycles = []
 	for perimeter in perimeters:
+		print "len perimeter", len(perimeter)
 		cycles.append(linkLines(perimeter))
 	return cycles
 
@@ -98,10 +133,8 @@ def linkLines(perimeter):
 	points = [perimeter[0].a,perimeter[0].b]
 	for point in perimeter[1:]:
 		points.append(point.b)
-
-
-
-	# def cycleMaker(self, lines):
+	return points
+# def cycleMaker(self, lines):
 	# 	ps = []
 	# 	for i in lines:
 	# 		print "i: %d" % lines.index(i)

@@ -18,7 +18,6 @@ def planeIntersect(p1,p2,zval):
 	#plane definitely doesn't cross line seg
 	if not (((p1.z <= zval) and (p2.z >= zval))
 		or ((p1.z >= zval) and (p2.z <= zval))):
-		print "no intersection"
 		return Vertex(0,0,-2)
 
 	x = (p1.x, p2.x-p1.x)
@@ -27,15 +26,12 @@ def planeIntersect(p1,p2,zval):
 	if z[1] == 0:
 		if z[0] == zval:
 			#line is on plane
-			print "line is on the plane"
 			return Vertex(0,0,-1)
 		else:
 			#line parallel to plane
-			print "line parallel to plane"
 			return Vertex(0,0,-2)
 	else:
 		t = (zval-z[0])/z[1]
-		print "plane intersection"
 		return Vertex(x[0]+x[1]*t, y[0]+y[1]*t, zval)
 
 
@@ -51,34 +47,27 @@ def facetIntersect(v1,v2,v3,zval):
 	 #    or the triangle is on the plane
 	 if p1.z == -1:
 	 	ret.append(Line(v1,v2))
-		print "Line v1,v2: " 
 		Line(v1,v2).show()
 	 if p2.z == -1:
 	 	ret.append(Line(v2,v3))
-		print "Line v2,v3:"
 		Line(v2,v3).show()
 	 if p3.z == -1:
 	 	ret.append(Line(v3,v1))
-		print "Line v3, v1:"
 		Line(v3,v1).show()
 	 if len(ret) > 0:
 	 	return ret
 
 	 #case where the triangle doesn't intersect the plane at all
 	 if p1.z == -2 and p2.z == -2 and p3.z == -2:
-		print "triangle doesn't intersect plane"
 	 	return ret
 
 	 #cases where the plane intersects the middle of the triangle 
 	 #   and one edge does not intersect the plane
 	 if p1.z == -2:
 	 	ret.append(Line(p2,p3))
-		print "Middle"
 	 elif p2.z == -2:
-		print "MIddle"
 	 	ret.append(Line(p1,p3))
 	 elif p3.z == -2:
-		print "Middle"
 	 	ret.append(Line(p1,p2))
 	 else:
 	 	tba = list(set([p1,p2,p3]))
@@ -91,8 +80,7 @@ def facetIntersect(v1,v2,v3,zval):
 	 	#   at another point 
 	 	if len(tba) == 2: 
 	 		return ret.append(Line(tba[0],tba[1]))
-	 		
-	 return ret 
+	 return list(set(ret))
 
 def removeDup(linesList):
 	lines = list(set(lines))
