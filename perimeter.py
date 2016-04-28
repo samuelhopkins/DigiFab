@@ -76,66 +76,92 @@ class Perimeter:
 			return True
 	
 	@classmethod
+
 	def cycleMaker(self, lines):
-		ps = []
-		for i in lines:
-			print "i: %d" % lines.index(i)
-			added = 0
-			for p in ps:
+		perimeters = [[lines[0]]]
+		lines = line[1:]
+		break_perimeter = False
+		for index, line in enumerate(lines):
+			connected = False
+			for i, perimeter in enumerate(perimeters):
+				if line[0] == perimeter_line[0] or line[1] == perimeter_line[0] or line[0] == perimeter_line[1] or line[1] == perimeter_line[1]:
+					perimeters[i].append(line)
+					connected = True
+				if not connected:
+					perimeters.append([line])
+
+		cycles = []
+		for perimeter in perimeters:
+			cycles.append(self.linkLines(perimeter))
+		return cycles
+
+	def linkLines(self, perimeter):
+		points = [perimeter[0].a,perimeter[0].b]
+		for point in perimeter[1:]:
+			points.append(point.b)
+
+
+
+	# def cycleMaker(self, lines):
+	# 	ps = []
+	# 	for i in lines:
+	# 		print "i: %d" % lines.index(i)
+	# 		added = 0
+	# 		for p in ps:
 				
-				if p.checkDupLine(i): # skip exact duplicate lines
-					print "duplicate line"
-					added = 1
-					break
-				else:
-					# append the new vertex
-					# if p contains [0,1] and i=[1,2]
-					# append 2, st p=[0,1,2]
-					for v in p.pts:
-						print "point-checker"
-						if p.connected(v,i.a,lines) and i.b not in p.pts: 
-							print "match on a"
-							p.pts.insert(p.pts.index(v)+1,i.b)
-							i.b.show()
-							added = 1
-							p.reorder(lines)
-							break
-						elif p.connected(v,i.b,lines) and i.a not in p.pts:
-							print "match on b"
-							p.pts.insert(p.pts.index(v)+1,i.a)
-							i.a.show()
-							added = 1
-							p.reorder(lines)
-							break
+	# 			if p.checkDupLine(i): # skip exact duplicate lines
+	# 				print "duplicate line"
+	# 				added = 1
+	# 				break
+	# 			else:
+	# 				# append the new vertex
+	# 				# if p contains [0,1] and i=[1,2]
+	# 				# append 2, st p=[0,1,2]
+	# 				for v in p.pts:
+	# 					print "point-checker"
+	# 					if p.connected(v,i.a,lines) and i.b not in p.pts: 
+	# 						print "match on a"
+	# 						p.pts.insert(p.pts.index(v)+1,i.b)
+	# 						i.b.show()
+	# 						added = 1
+	# 						p.reorder(lines)
+	# 						break
+	# 					elif p.connected(v,i.b,lines) and i.a not in p.pts:
+	# 						print "match on b"
+	# 						p.pts.insert(p.pts.index(v)+1,i.a)
+	# 						i.a.show()
+	# 						added = 1
+	# 						p.reorder(lines)
+	# 						break
 							
-			# if the current line cannot be added to any existing perimeter
-			#	make it the seed of a new perimeter
-			if added == 0:
-				print "new perimeter"
-				i.show()
-				a = Perimeter([i.a,i.b])
-				ps.append(Perimeter(pts=[i.a,i.b]))
-		print "out of the loop"
-		print ""
-		for p in ps:
-			p.removeDupVertex()
-		print "removed"
-		for p in ps:
-			p.show()
-			print ""
-		for p in ps:
-			if p.checkClosed(lines) == False:
-				ps.remove(p)
-		print "removed non-manifold perimeter"
-		#for p in ps:
-		#	p.removeDupVertex()
-		nix = []
-		for i in range(0,len(ps)-1):
-			for j in range(0,len(ps)):
-				if i == j:
-					pass
-				elif ps[i].eq(ps[j]):
-					nix.append(j)
-		for n in nix:
-			ps.remove(ps[j])
-		return ps
+	# 		# if the current line cannot be added to any existing perimeter
+	# 		#	make it the seed of a new perimeter
+	# 		if added == 0:
+	# 			print "new perimeter"
+	# 			i.show()
+	# 			a = Perimeter([i.a,i.b])
+	# 			ps.append(Perimeter(pts=[i.a,i.b]))
+	# 	print "out of the loop"
+	# 	print ""
+	# 	for p in ps:
+	# 		p.removeDupVertex()
+	# 	print "removed"
+	# 	for p in ps:
+	# 		p.show()
+	# 		print ""
+	# 	for p in ps:
+	# 		if p.checkClosed(lines) == False:
+	# 			ps.remove(p)
+	# 	print "removed non-manifold perimeter"
+	# 	#for p in ps:
+	# 	#	p.removeDupVertex()
+	# 	nix = []
+	# 	for i in range(0,len(ps)-1):
+	# 		for j in range(0,len(ps)):
+	# 			if i == j:
+	# 				pass
+	# 			elif ps[i].eq(ps[j]):
+	# 				nix.append(j)
+	# 	for n in nix:
+	# 		ps.remove(ps[j])
+	# 	return ps
