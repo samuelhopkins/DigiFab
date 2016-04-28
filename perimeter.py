@@ -84,7 +84,8 @@ class Perimeter:
 		for index, line in enumerate(lines):
 			connected = False
 			for i, perimeter in enumerate(perimeters):
-				if line[0] == perimeter_line[0] or line[1] == perimeter_line[0] or line[0] == perimeter_line[1] or line[1] == perimeter_line[1]:
+				perimeter_line = perimeter[-1]
+				if line.a == perimeter_line.a or line.a == perimeter_line.b or line.b == perimeter_line.b or line.b == perimeter_line.b:
 					perimeters[i].append(line)
 					connected = True
 				if not connected:
