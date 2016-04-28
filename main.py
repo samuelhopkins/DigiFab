@@ -3,7 +3,7 @@ import sys
 #import infill
 import intersection
 from line import Line
-from perimeter import Perimeter
+import perimeter
 #import support
 from vertex import Vertex
 
@@ -166,7 +166,7 @@ def main():
 		for f in facets:
 			lines.extend(intersection.facetIntersect(f.vs[0], f.vs[1], f.vs[2], z))
 			print "intersections"
-		perims = Perimeter.cycleMaker(lines)
+		perims = perimeter.cycleMaker(lines)
 		print "perimeter"
 		count = shell(shell_no, perims[0], output,thickness,count)
 		print "shell"

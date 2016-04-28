@@ -75,31 +75,29 @@ class Perimeter:
 		if dup == len(self.pts):
 			return True
 	
-	@classmethod
+def cycleMaker(lines):
+	perimeters = [[lines[0]]]
+	lines = lines[1:]
+	break_perimeter = False
+	for index, line in enumerate(lines):
+		connected = False
+		for i, perimeter in enumerate(perimeters):
+			perimeter_line = perimeter[-1]
+			if line.a == perimeter_line.a or line.a == perimeter_line.b or line.b == perimeter_line.b or line.b == perimeter_line.b:
+				perimeters[i].append(line)
+				connected = True
+			if not connected:
+				perimeters.append([line])
 
-	def cycleMaker(self, lines):
-		perimeters = [[lines[0]]]
-		lines = line[1:]
-		break_perimeter = False
-		for index, line in enumerate(lines):
-			connected = False
-			for i, perimeter in enumerate(perimeters):
-				perimeter_line = perimeter[-1]
-				if line.a == perimeter_line.a or line.a == perimeter_line.b or line.b == perimeter_line.b or line.b == perimeter_line.b:
-					perimeters[i].append(line)
-					connected = True
-				if not connected:
-					perimeters.append([line])
+	cycles = []
+	for perimeter in perimeters:
+		cycles.append(linkLines(perimeter))
+	return cycles
 
-		cycles = []
-		for perimeter in perimeters:
-			cycles.append(self.linkLines(perimeter))
-		return cycles
-
-	def linkLines(self, perimeter):
-		points = [perimeter[0].a,perimeter[0].b]
-		for point in perimeter[1:]:
-			points.append(point.b)
+def linkLines(perimeter):
+	points = [perimeter[0].a,perimeter[0].b]
+	for point in perimeter[1:]:
+		points.append(point.b)
 
 
 

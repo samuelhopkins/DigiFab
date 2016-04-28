@@ -45,7 +45,8 @@ class Vertex:
 		return False
 	
 	def dot(self, v):
-		return self.x(v.x + self.y*v.y + self.z*float(v.z)
+		return self.x(v.x + self.y*v.y + self.z*float(v.z))
+		return self.x(v.x + self.y*v.y + self.z*float(v.z))
 	
 	def mag(self):
 		return sqrt(self.x^2 + self.y^2 + float(self.z^2))
