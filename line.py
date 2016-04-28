@@ -8,7 +8,7 @@ class Line:
 		return sqrt(((self.b.x-self.a.x)^2) + (self.b.y-self.a.y)^2 + (self.b.z-self.a.z)^2)
 	
 	def tuple(self):
-		return (a.tuple, b.tuple)
+		return (self.a.tuple(), self.b.tuple())
 		
 	@classmethod
 	def dot(a,b):

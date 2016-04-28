@@ -84,12 +84,13 @@ def cycleMaker(lines):
 	added_lines.add(lines[0].tuple())
 	while count <= len(lines):
 		exit = False
-		for index, p_line in enumerate(perimeter_one):
+		print added_lines
+		for index, perimeter_line in enumerate(perimeter_one):
 			for line in lines:
-				if line.tuple not in added_lines:
+				if line.tuple() not in added_lines:
 					if line.a.eq(perimeter_line.a) or line.a.eq(perimeter_line.b) or line.b.eq(perimeter_line.b) or line.b.eq(perimeter_line.a):
 						perimeter_one.append(line)
-						added_lines.add(line.tuple)
+						added_lines.add(line.tuple())
 						exit = True
 						break
 			if exit:
@@ -98,7 +99,7 @@ def cycleMaker(lines):
 		
 	perimeter_two = []
 	for line in lines:
-		if line not in added_lines:
+		if line.tuple() not in added_lines:
 			perimeter_two.append(line)
 
 	perimeters.append(perimeter_one)
