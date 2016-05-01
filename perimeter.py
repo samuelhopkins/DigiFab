@@ -118,7 +118,6 @@ def linkLines(perimeter):
 	points = [perimeter[0].a,perimeter[0].b]
 	for point in perimeter[1:]:
 		points.append(point.b)
-	points.append(perimeter[0].a)
 	return points
 # def cycleMaker(self, lines):
 	# 	ps = []
