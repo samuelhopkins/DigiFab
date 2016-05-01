@@ -1,5 +1,4 @@
 import math
-import sys
 from line import Line
 from vertex import Vertex
 
@@ -19,111 +18,78 @@ def planeIntersect(p1,p2,zval):
 	#plane definitely doesn't cross line seg
 	if not (((p1.z <= zval) and (p2.z >= zval))
 		or ((p1.z >= zval) and (p2.z <= zval))):
-		#print "no intersection"
 		return Vertex(0,0,-2)
 
-	x = (float(p1.x), p2.x-p1.x)
-	y = (float(p1.y), p2.y-p1.y)
-	z = (float(p1.z), p2.z-p1.z)
-	#print "z = %.2f %.2f" % (z[0], z[1])
+	x = (p1.x, p2.x-p1.x)
+	y = (p1.y, p2.y-p1.y)
+	z = (p1.z, p2.z-p1.z)
 	if z[1] == 0:
 		if z[0] == zval:
 			#line is on plane
-			#print "line is on the plane"
 			return Vertex(0,0,-1)
 		else:
 			#line parallel to plane
-			#print "line parallel to plane"
 			return Vertex(0,0,-2)
 	else:
-		#print "t = %.2f/%.2f" % (zval - z[0], z[1])	
-		t = (zval-z[0])/float(z[1])
-		#print ">>>>>>>>>>plane intersection"
-		#print "t = %.2f" % t
-		#p1.show()
-		#p2.show()
-		#p3 = Vertex(x[0]+x[1]*t, y[0]+y[1]*t, zval)
-		#p3.show()
-		#print "<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+		t = (zval-z[0])/z[1]
 		return Vertex(x[0]+x[1]*t, y[0]+y[1]*t, zval)
 
-def remDupPts(v1,v2,v3):
-	ret = []
-	if v1.eq(v2) and v1.eq(v3):
-		return [v1]
-	elif v1.eq(v2) and not v1.eq(v3):
-		return [v1,v3]
-	elif not v1.eq(v2) and v1.eq(v3):
-		return [v1,v2]
-	elif v1.eq(v2) and not v2.eq(v3):
-		return [v2,v3]
-	else:
-		return [v1,v2,v3]
 
 #holy this function had way more cases than I thought there was
 #returns a ***LIST*** of lines that intersect the plane
 def facetIntersect(v1,v2,v3,zval):
 	# all the points that could potentially cross w/plane
-	p1 = planeIntersect(v1,v2,zval)
-	p2 = planeIntersect(v2,v3,zval)
-	p3 = planeIntersect(v3,v1,zval)
-	#p1.show()
-	#p2.show()
-	#p3.show()
-	ret = []
-	
-	#case where the triangle lies on the plane, throw it out
-	if p1.z == -1 and p2.z == -1 and p3.z == -1:
- 		print "on plane"
-	 	return []
-
-	#cases where one edge of the triangle lies on the plane
-	if p1.z == -1:
-		ret.append(Line(v1,v2))
-		#print "Line v1,v2: " 
-		#Line(v1,v2).show()
-	elif p2.z == -1:
+	 p1 = planeIntersect(v1,v2,zval)
+	 p2 = planeIntersect(v2,v3,zval)
+	 p3 = planeIntersect(v3,v1,zval)
+	 ret = []
+	 #cases where one edge of the triangle lies on the plane
+	 #    or the triangle is on the plane
+	 if p1.z == -1:
+	 	ret.append(Line(v1,v2))
+		Line(v1,v2).show()
+	 if p2.z == -1:
 	 	ret.append(Line(v2,v3))
-		#print "Line v2,v3:"
-		#Line(v2,v3).show()
-	elif p3.z == -1:
+		Line(v2,v3).show()
+	 if p3.z == -1:
 	 	ret.append(Line(v3,v1))
-		#print "Line v3, v1:"
-		#Line(v3,v1).show()
-	if len(ret) > 0:
-	 	print "one edge"
+		Line(v3,v1).show()
+	 if len(ret) > 0:
 	 	return ret
 
-	#case where the triangle doesn't intersect the plane at all
-	if p1.z == -2 and p2.z == -2 and p3.z == -2:
-		#print "triangle doesn't intersect plane"
-		print "no intersection"
+	 #case where the triangle doesn't intersect the plane at all
+	 if p1.z == -2 and p2.z == -2 and p3.z == -2:
 	 	return ret
 
-	#cases where the plane intersects the middle of the triangle 
-	#   and one edge does not intersect the plane
-	tba = remDupPts(p1,p2,p3)
-	#print "tba: %.2f" % len(tba)
-
-	#cases where plane only intersects at 1 vertex
-	if len(tba) == 2 and (p1.z == -2 or p2.z == -2 or p3.z == -2):
-		print "one vertex"
-		return ret
-
-	#cases where plane intersects on one vertex, but intersects
-	#   at another point 
-	if len(tba) == 2: 
-		print "one vertex middle"
-		return ret.append(Line(tba[0],tba[1]))
-
-	if p1.z == -2:
+	 #cases where the plane intersects the middle of the triangle 
+	 #   and one edge does not intersect the plane
+	 if p1.z == -2:
 	 	ret.append(Line(p2,p3))
-	elif p2.z == -2:
+	 elif p2.z == -2:
 	 	ret.append(Line(p1,p3))
-	elif p3.z == -2:
-	 	ret.append(Line(p1,p2))	 	
-	print "middle"
-	return ret 
+	 elif p3.z == -2:
+	 	ret.append(Line(p1,p2))
+	 else:
+	 	tba = list(set([p1,p2,p3]))
+
+	 	#cases where plane only intersects at 1 vertex
+	 	if len(tba) == 1:
+	 		return ret
+
+	 	#cases where plane intersects on one vertex, but intersects
+	 	#   at another point 
+	 	if len(tba) == 2: 
+	 		return ret.append(Line(tba[0],tba[1]))
+	 return list(set(ret))
+
+def removeDup(linesList):
+	lines = list(set(lines))
+	for i in lines:
+		for j in lines:
+			if i.eq(j):
+				lines.remove(j)
+				
+	return lines
 
 def distToOrigin(v1):
 	math.sqrt(math.pow(v1.x,2) + math.pow(v1.y,2))
@@ -191,48 +157,3 @@ def findperim(linesList):
 			last = linesList[i].a
 
 	return ret
-
-# def main():
-# 	  #command line arguments: file, layer thickness, #shell layers, %infill (0-100)
-# 	thickness = .4
-# 	layer_height = 1
-# 	shell_no = 2
-# 	infill = .2
-
-# 	vers = (Vertex(0,0,0),
-# 			Vertex(0,10,0),
-# 			Vertex(10,0,0),
-# 			Vertex(10,10,0),
-# 			Vertex(0,0,10),
-# 			Vertex(0,10,10),
-# 			Vertex(10,0,10),
-# 			Vertex(10,10,10))
-
-# 	facets = ((vers[0], vers[1], vers[2]),
-# 			  (vers[1], vers[2], vers[3]),
-# 			  (vers[0], vers[4], vers[5]),
-# 			  (vers[0], vers[4], vers[1]),
-# 			  (vers[0], vers[4], vers[2]),
-# 			  (vers[0], vers[4], vers[6]),
-# 			  (vers[4], vers[5], vers[6]),
-# 			  (vers[5], vers[6], vers[7]),
-# 			  (vers[3], vers[7], vers[1]),
-# 			  (vers[3], vers[7], vers[2]),
-# 			  (vers[3], vers[7], vers[5]),
-# 			  (vers[3], vers[7], vers[6]))
-
-
-# 	z = 0
-# 	height = 10
-# 	while z <= height:
-# 		print "*********************************************************"
-# 		print z
-# 		lines = []	
-# 		for f in facets:
-# 			boo = facetIntersect(f[0], f[1], f[2], z)
-# 			lines.extend(boo)
-# 			#print "intersection num: %.2f" % len(boo)
-# 		z = z + layer_height
-
-
-# main()
