@@ -47,13 +47,13 @@ def facetIntersect(v1,v2,v3,zval):
 	 #    or the triangle is on the plane
 	 if p1.z == -1:
 	 	ret.append(Line(v1,v2))
-		Line(v1,v2).show()
+		#Line(v1,v2).show()
 	 if p2.z == -1:
 	 	ret.append(Line(v2,v3))
-		Line(v2,v3).show()
+		#Line(v2,v3).show()
 	 if p3.z == -1:
 	 	ret.append(Line(v3,v1))
-		Line(v3,v1).show()
+		#Line(v3,v1).show()
 	 if len(ret) > 0:
 	 	return ret
 

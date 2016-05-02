@@ -76,7 +76,7 @@ class Perimeter:
 			return True
 	
 def cycleMaker(lines):
-	print "line length", len(lines)
+	#print "line length", len(lines)
 	perimeters = []
 	count = 0
 	perimeter_one = [lines[0]]
@@ -84,15 +84,20 @@ def cycleMaker(lines):
 	added_lines.add(lines[0].tuple())
 	while count <= len(lines):
 		exit = False
-		print added_lines
+		#print added_lines
 		perimeter_line = perimeter_one[-1]
 		perimeter_line_first = perimeter_one[0]
+
 		for line in lines:
+			#line.show()
+			#print ""
 			if line.tuple() not in added_lines:
 				if line.a.eq(perimeter_line.a) or line.a.eq(perimeter_line.b) or line.b.eq(perimeter_line.b) or line.b.eq(perimeter_line.a):
+					#print "appended"
 					perimeter_one.append(line)
 					added_lines.add(line.tuple())
 				elif line.a.eq(perimeter_line_first.a) or line.a.eq(perimeter_line_first.b) or line.b.eq(perimeter_line_first.b) or line.b.eq(perimeter_line_first.a):
+					#print "appended"
 					perimeter_one = [line] + perimeter_one
 					added_lines.add(line.tuple())
 		count += 1
@@ -100,6 +105,8 @@ def cycleMaker(lines):
 	perimeter_two = []
 	for line in lines:
 		if line.tuple() not in added_lines:
+			print "new perimeter"
+			line.show()
 			perimeter_two.append(line)
 
 	perimeters.append(perimeter_one)
@@ -108,7 +115,7 @@ def cycleMaker(lines):
 
 	cycles = []
 	for perimeter in perimeters:
-		print "len perimeter", len(perimeter)
+		#print "len perimeter", len(perimeter)
 		cycles.append(linkLines(perimeter))
 	return cycles
 

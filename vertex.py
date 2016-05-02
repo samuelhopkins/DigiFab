@@ -16,7 +16,7 @@ class Vertex:
 		self.x = self.x * size
 		self.y = self.y * size
 		self.z = self.z * size
-
+		
 	def add(self, v):
 		return Vertex(self.x + v.x,
 					  self.y + v.y,
@@ -29,9 +29,9 @@ class Vertex:
 	
 	@classmethod
 	def approx(a,b,err):
-		if math.abs(a.x - b.x) <= err:
-			if math.abs(a.y-b.y) <= err:
-				if math.abs(a.z-b.z) <= err:
+		if abs(a.x - b.x) <= err:
+			if abs(a.y-b.y) <= err:
+				if abs(a.z-b.z) <= err:
 					return True
 		return False
 	
@@ -41,9 +41,10 @@ class Vertex:
 		return False
 	
 	def eq(self, v):
-		if self.x == v.x:
-			if self.y == v.y:
-				if self.z == v.z:
+		threshold = .00000001
+		if abs(self.x-v.x) < threshold:
+			if abs(self.y-v.y) < threshold:
+				if abs(self.z-v.z) < threshold:
 					return True
 		return False
 	

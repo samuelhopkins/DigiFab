@@ -1,6 +1,6 @@
 import math
 import sys
-#import infill
+from infill import Infill
 import intersection
 from line import Line
 import perimeter
@@ -66,22 +66,26 @@ def distance(a,b):
 
 def e(a,b,thickness=.4,diameter=1.75):
 	return (distance(a,b) * thickness)/diameter
-
+	
 def shell(shell_no, perim, output, thickness, count):
-  extrudate = count
-  for s in range(shell_no):
-    for p in range(0,len(perim)-2):
-    	current = perim[p]
-    	dest = perim[p+1]
-    	extrudate = extrudate + e(dest, current)
-    	line = "G1 X%.3f Y%.3f E%.5f F%.3f\n" % (dest.x, dest.y, extrudate, 1800)
-    	output.write(line)
-    extrudate = extrudate + e(perim[len(perim)-1], perim[0])
-    line = "G1 X%.3f Y%.3f E%.5f\n" % (perim[0].x, perim[0].y, extrudate)
-    output.write(line)
-    line = "G1 X%.3f Y%.3f\n" % (perim[0].x + s*thickness, perim[0].y + s*thickness)
-    output.write(line)
-    return extrudate
+	extrudate = count
+	for s in range(1,shell_no+1):
+		adj = s*thickness
+		line = "G0 X%.3f Y%.3f F%.3f\n" % (perim[0].x+adj, perim[0].y+adj, 2400)
+		output.write(line)
+		for p in range(1,len(perim)-1):
+			dest = perim[p]
+			prev = perim[p-1]
+			extrudate = extrudate + e(prev.add(Vertex(adj, adj, 0)),
+									  dest.add(Vertex(adj, adj, 0)))
+			line = "G1 X%.3f Y%.3f E%.5f F%.3f\n" % (dest.x+adj, dest.y+adj, extrudate, 1800)
+			output.write(line)
+		extrudate = extrudate + e(perim[-1], perim[0])
+		line = "G1 X%.3f Y%.3f E%.5f F%.3f\n" % (perim[-1].x+adj, perim[-1].y+adj, extrudate, 1800 )
+		output.write(line)
+	#	line = "G1 X%.3f Y%.3f\n" % (perim[0].x + s*thickness, perim[0].y + s*thickness)
+	#	output.write(line)
+	return extrudate
     
 def parseFile(f):
 	ret = []
@@ -110,7 +114,7 @@ def setF(extrude):
    if extrude: return 1800
    else: return 2400
 
-def infiller(infill_lines, extrude, output):
+def infiller(infill_lines, extrude, output, count):
   for i in range(1,len(infill_lines)-1):
     dest = infill_lines[i+1]
     if extrude == 0:
@@ -118,7 +122,7 @@ def infiller(infill_lines, extrude, output):
    	  output.write(line)
    	  extrude = 1
     else:
-   	  e = Infill.distance(i, dest)
+   	  extrudate = e(infill_lines[i], dest)
    	  line = "G0 X%.2E Y%.2E E%.2E F%.2E\n" % (dest.x, dest.y, e, 1800)
     output.write(line)
     extrude = 0
@@ -161,16 +165,40 @@ def main():
 	count = 0
 	orientation = 0
 	z = 0
+	fill = Infill()
 	while z <= height:
 		lines = []
+		infill_lines = []
 		for f in facets:
 			lines.extend(intersection.facetIntersect(f.vs[0], f.vs[1], f.vs[2], z))
-		print len(lines)
+		for l in lines:
+			l.show()
+		print ""
+		#print len(lines)
 		perims = perimeter.cycleMaker(lines)
+		for p in perims:
+			print "perimeter"
+			for c in p:
+				c.show()
+			print ""
 		count = shell(shell_no, perims[0], output,thickness,count)
+		# infill_lines = fill.calculateInfill(perims, orientation, 0, infill)
+		# if len(infill_lines) > 0:
+			# output.write(";infill start\n")
+			# e = distance(infill_lines[0], infill_lines[1])
+			# line = "G0 X%.3f Y%.3f F%.3f\n" % (infill_lines[1].x, infill_lines[1].y, 2400)
+			# output.write(line)
+			# infiller(infill_lines, orientation, output, 1.75)
+			# output.write(";infill end\n")
+		# if orientation == 0: 
+			# orientation = 1
+		# else: 
+			# orientation = 0
+		
 		z += layer_height
-		line = "G0 Z%.3f\n" % z
+		line = "G0 X0 Y0 Z%.3f\n" % z
 		output.write(line)
+		
 	output.write(";End GCode\n"
 			"M104 S0                     ;extruder heater off\n"
 			 "M140 S0                     ;heated bed heater off (if you have it)\n"
@@ -181,16 +209,8 @@ def main():
     	     "M84                         ;steppers off\n"
     	     "G90                         ;absolute positioning\n"
     	     ";{profile_string}")
-'''
-    infill_lines = Infill.calculateInfill(perims, orientation, adjustment, coder.infill)
-    e = Infill.distance(infill_lines[0], infill_lines[1])
-    line = "G0 X%.3f Y%.3f F%.3f" % (infill_lines[1].x, infill_lines[1].y, 2400)
-    output.write(line)
-    infiller(infill_lines, extrude, output, 1.75)
-    
-    if orientation == 0: orientation = 1
-    else: orientation = 0
-''' 						 
+
+   
   #     do shell infill
   #     do infill code
 	#writing end-gcode

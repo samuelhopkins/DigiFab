@@ -22,7 +22,7 @@ class Line:
 		self.a.show(), self.b.show()
 
 	def eq(self,j):
-		if (self.a.eq(j.a) and self.b.eq(j.b)
-			or self.a.eq(j.b) and self.b.eq(j.a)):
+		if ((self.a.eq(j.a) and self.b.eq(j.b))
+			or (self.a.eq(j.b) and self.b.eq(j.a))):
 			return True
 		return False
